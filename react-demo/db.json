@@ -1,0 +1,67 @@
+{
+  "products": [
+    {
+      "id": 2,
+      "name": "San Pham B",
+      "price": 210000,
+      "image": "https://down-vn.img.susercontent.com/file/5f5b5ceeefbf7f1938667744d5362e57",
+      "description": "San pham qua tuyet voi"
+    },
+    {
+      "id": 3,
+      "name": "San Pham C",
+      "price": 220000,
+      "image": "https://admin.vuahanghieu.com/upload/product/2022/11/giay-the-thao-nike-air-force-1-07-lv8-40th-anniversary-dq7658-100-mau-trang-size-42-6369d25981179-08112022105153.jpg",
+      "description": "San pham qua tuyet voi"
+    },
+    {
+      "id": 4,
+      "name": "San Pham D",
+      "price": 230000,
+      "image": "https://down-vn.img.susercontent.com/file/e01708e387773990c1ff3567c998e417",
+      "description": "San pham qua tuyet voi"
+    },
+    {
+      "id": 5,
+      "name": "San Pham E",
+      "price": 240000,
+      "image": "https://down-vn.img.susercontent.com/file/vn-11134201-23030-b5jr3txge5nv63",
+      "description": "San pham qua tuyet voi"
+    },
+    {
+      "id": 6,
+      "name": "San Pham F",
+      "price": 250000,
+      "image": "https://down-vn.img.susercontent.com/file/0f08b0c537f476c45d95736af296c6f9",
+      "description": "San pham qua tuyet voi"
+    },
+    {
+      "name": "",
+      "price": "",
+      "description": "",
+      "image": "",
+      "id": 7
+    },
+    {
+      "name": "",
+      "price": "",
+      "description": "",
+      "image": "",
+      "id": 8
+    },
+    {
+      "name": "",
+      "price": "",
+      "description": "",
+      "image": "",
+      "id": 9
+    },
+    {
+      "name": "",
+      "price": "",
+      "description": "",
+      "image": "",
+      "id": 10
+    }
+  ]
+}
