@@ -1,13 +1,8 @@
 import React from "react";
-import Header from "../../components/admin/Header";
-import Footer from "../../components/admin/Footer";
+
 const DashBoard = () => {
   return (
     <div>
-      {/* HEADER */}
-      <Header />
-
-      {/* CONTENT */}
       <div className="container">
         <h3 className="text-info text-center mt-4">Administrator</h3>
         <div className="text-center mt-4">
@@ -17,9 +12,6 @@ const DashBoard = () => {
           />
         </div>
       </div>
-
-      {/* FOOTER */}
-      <Footer />
     </div>
   );
 };

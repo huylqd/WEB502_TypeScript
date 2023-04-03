@@ -1,27 +1,24 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import Footer from "../components/Footer";
-import Header from "../components/Header";
+
 const ProductDetail = () => {
   const { id } = useParams();
   const [product, setProduct] = useState({});
   useEffect(() => {
     try {
-      const getOneProduct = async (id) => {
+      (async () => {
         const { data: product } = await axios.get(
-          `http://localhost:3000/products/${id}`
+          `http://localhost:8080/api/products/${id}`
         );
         setProduct(product);
-      };
-      getOneProduct(id);
+      })();
     } catch (error) {
       console.log(error.message);
     }
   }, []);
   return (
     <div>
-      <Header />
       <div className="container">
         <div className="mt-3">
           <h3 className="text-info">{product.name}</h3>
@@ -40,7 +37,6 @@ const ProductDetail = () => {
           </div>
         </div>
       </div>
-      <Footer />
     </div>
   );
 };

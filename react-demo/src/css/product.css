@@ -46,3 +46,8 @@
   border: 1px solid rgb(231, 231, 231);
   border-radius: 5px;
 }
+.not-found-img {
+  width: 800px;
+  margin: 20px auto;
+  display: block;
+}

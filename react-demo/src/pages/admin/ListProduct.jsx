@@ -1,8 +1,6 @@
 // import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import Footer from "../../components/admin/Footer";
-import Header from "../../components/admin/Header";
 const ListProduct = (props) => {
   //gan onHandleRemove vao 1 cai bien
   const { onRemove } = props;
@@ -19,7 +17,6 @@ const ListProduct = (props) => {
   };
   return (
     <div>
-      <Header />
       <div className="container mt-4">
         <table className="table">
           <thead>
@@ -32,9 +29,9 @@ const ListProduct = (props) => {
               <th scope="col">Action</th>
             </tr>
           </thead>
-          {products.map((product, i) => {
+          {products?.map((product, i) => {
             return (
-              <tbody key={product.id}>
+              <tbody key={product?._id}>
                 <tr>
                   <th scope="row">{i + 1}</th>
                   <td>{product.name}</td>
@@ -52,13 +49,13 @@ const ListProduct = (props) => {
                     <button
                       className="btn btn-danger"
                       onClick={() => {
-                        removeProduct(product.id);
+                        removeProduct(product._id);
                       }}
                     >
                       <i className="bi bi-trash"></i>
                     </button>
                     <Link
-                      to={`/admin/products/edit/${product.id}`}
+                      to={`/admin/product/edit/${product._id}`}
                       className="btn btn-warning ml-2"
                     >
                       <i className="bi bi-pencil-square"></i>
@@ -70,7 +67,6 @@ const ListProduct = (props) => {
           })}
         </table>
       </div>
-      <Footer />
     </div>
   );
 };

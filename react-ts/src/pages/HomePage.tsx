@@ -2,13 +2,10 @@ import React from "react";
 
 const HomePage = () => {
   return (
-    <div>
-      <div className="text-center">
-        <h1 className="text-center text-danger my-4 ">Home Page Product</h1>
-      </div>
+    <div className="container">
       <div
         id="carouselExampleIndicators"
-        className="carousel slide wrapper-carousel"
+        className="carousel slide wrapper-carousel my-3 mx-auto"
         data-ride="carousel"
       >
         <ol className="carousel-indicators">
