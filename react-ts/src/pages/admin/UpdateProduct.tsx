@@ -1,78 +1,168 @@
 import React, { useEffect, useState } from "react";
-import { SubmitHandler, useForm } from "react-hook-form";
-import { useParams } from "react-router-dom";
+import { Button, Form, Input, InputNumber, Select } from "antd";
+import type { FormInstance } from "antd/es/form";
 import { IProduct } from "../../types/product";
 import { ICategory } from "../../types/category";
-interface Iprops {
+import { useParams } from "react-router-dom";
+
+//type Props
+interface IProps {
   categories: ICategory[];
   products: IProduct[];
-  onUpdate: (product: IProduct) => void;
+  onUpdate: (data: IProduct) => void;
 }
-const UpdateProduct = (props: Iprops) => {
+
+const UpdateProduct = (props: any) => {
   const { id } = useParams();
-  const { register, handleSubmit, reset } = useForm<IProduct>();
+  const formRef = React.useRef<FormInstance>(null);
+  const [form] = Form.useForm();
   const [categories, setCategories] = useState<ICategory[]>([]);
-  //get one product
+  const [product, setProduct] = useState<IProduct>();
+
+  //set lai gia tri cua product
   useEffect(() => {
-    const currentProduct = props.products.find((product) => product._id === id);
-    reset(currentProduct);
+    setProduct(props.products.find((product: IProduct) => product._id === id));
   }, [props]);
 
-  //get all categories
+  //chạy lại useEffect khi giá trị của product thay đổi
+  // sau đó gọi hàm set setFields để thực hiện set lại giá trị của các input
+  useEffect(() => {
+    setFields();
+  }, [product]);
+
+  // set lai gia tri cua categories
   useEffect(() => {
     setCategories(props.categories);
-  }, [props]);
+  }, [props.categories]);
 
-  const onHandleSubmit: SubmitHandler<IProduct> = (data: IProduct) => {
-    props.onUpdate(data);
+  // set lai gia tri cua input
+  const setFields = () => {
+    form.setFieldsValue({
+      _id: product?._id,
+      name: product?.name,
+      price: product?.price,
+      description: product?.description,
+      image: product?.image,
+      categoryId: product?.categoryId,
+    });
+  };
+  // console.log("cate", categories);
+  // console.log("pro", product?.categoryId);
+
+  // get values fields successfully
+  const onFinish = (values: IProduct) => {
+    props.onUpdate(values);
+  };
+
+  // finish error
+  const onFinishFailed = (errorInfo: any) => {
+    console.log("Failed:", errorInfo);
+  };
+
+  const onReset = () => {
+    formRef.current?.resetFields();
+  };
+
+  const { Option } = Select;
+
+  const layout = {
+    labelCol: { span: 8 },
+    wrapperCol: { span: 16 },
+  };
+
+  const tailLayout = {
+    wrapperCol: { offset: 8, span: 16 },
   };
   return (
-    <div className="container">
-      <h3 className="text-center py-3 text-info text-uppercase">
-        <i className="bi bi-pencil-square mr-2"></i>Cập nhật sản phẩm
-      </h3>
-      <form className="w-50 mx-auto" onSubmit={handleSubmit(onHandleSubmit)}>
-        <div className="form-group">
-          <label htmlFor="categoryId">Danh mục</label>
-          <select className="form-control" {...register("categoryId")}>
-            <option value={""}>Chọn danh mục</option>
-            {categories.map((category) => {
-              return (
-                <option value={category._id} key={category._id}>
-                  {category.name}
-                </option>
-              );
-            })}
-          </select>
-        </div>
-        <div className="form-group">
-          <label htmlFor="name">Tên sản phẩm</label>
-          <input type="text" className="form-control" {...register("name")} />
-        </div>
-        <div className="form-group">
-          <label htmlFor="name">Giá sản phẩm</label>
-          <input type="text" className="form-control" {...register("price")} />
-        </div>
-        <div className="form-group">
-          <label htmlFor="name">Mô tả sản phẩm</label>
-          <textarea
-            className="form-control"
-            rows={3}
-            {...register("description")}
-          ></textarea>
-        </div>
-        <div className="form-group">
-          <label htmlFor="name">Ảnh sản phẩm</label>
-          <input type="text" className="form-control" {...register("image")} />
-        </div>
-        <div className="my-3">
-          <img alt="product's image" className="img-list-pro" />
-        </div>
-        <button type="submit" className="btn btn-info">
+    <Form
+      {...layout}
+      ref={formRef}
+      name="control-ref"
+      onFinish={onFinish}
+      onFinishFailed={onFinishFailed}
+      style={{ maxWidth: 600 }}
+      form={form}
+    >
+      <Form.Item name="_id" style={{ display: "none" }}>
+        <Input />
+      </Form.Item>
+
+      <Form.Item
+        name="categoryId"
+        label="Danh mục"
+        rules={[{ required: true, message: "Vui lòng chọn danh mục" }]}
+      >
+        <Select placeholder="Chọn danh mục" allowClear>
+          {categories.map((category) => {
+            return category._id === product?.categoryId ? (
+              <Option value={category._id} selected>
+                {category.name}
+              </Option>
+            ) : (
+              <Option value={category._id}>{category.name}</Option>
+            );
+          })}
+        </Select>
+      </Form.Item>
+
+      <Form.Item
+        name="name"
+        label="Tên sản phẩm"
+        rules={[
+          { required: true, message: "Vui lòng nhập tên sản phẩm" },
+          { min: 5, message: "Tên sản phẩm phải nhiều hơn 5 ký tự" },
+        ]}
+      >
+        <Input />
+      </Form.Item>
+
+      <Form.Item
+        name="description"
+        label="Mô tả sản phẩm"
+        rules={[
+          { required: true, message: "Vui lòng nhập tên sản phẩm" },
+          { min: 10, message: "Mô tả sản phẩm phải nhiều hơn 10 ký tự" },
+        ]}
+      >
+        <Input />
+      </Form.Item>
+
+      <Form.Item
+        name="price"
+        label="Giá sản phẩm"
+        rules={[
+          { required: true, message: "Vui lòng nhập giá sản phẩm" },
+          {
+            pattern: /^[1-9]\d*$/,
+            message: "Vui lòng nhập số lớn hơn 0",
+          },
+        ]}
+      >
+        <InputNumber />
+      </Form.Item>
+
+      <Form.Item
+        name="image"
+        label="Ảnh sản phẩm"
+        rules={[{ required: true, message: "Dán link file ảnh" }]}
+      >
+        <Input />
+      </Form.Item>
+      {/* <Form.Item name="image" label="Ảnh sản phẩm">
+        <Upload {...propsImg}>
+          <Button icon={<UploadOutlined />}>Tải ảnh lên</Button>
+        </Upload>
+      </Form.Item> */}
+
+      <Form.Item {...tailLayout}>
+        <Button type="primary" htmlType="submit">
           Cập nhật
-        </button>
-      </form>
-    </div>
+        </Button>
+        <Button htmlType="button" onClick={onReset} className="ml-2">
+          Đặt lại
+        </Button>
+      </Form.Item>
+    </Form>
   );
 };
 

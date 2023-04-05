@@ -1,95 +1,116 @@
-import React, { useEffect, useState } from "react";
+// ANTD LAYOUT
+import { useEffect, useState } from "react";
+import { Button, Popconfirm, Image, Space, Table } from "antd";
+import type { ColumnsType } from "antd/es/table";
 import { Link } from "react-router-dom";
+import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 
+// interface data type product
 import { IProduct } from "../../types/product";
 import { ICategory } from "../../types/category";
 
-interface Iprops {
-  products: IProduct[];
-  categories: ICategory[];
-  onDelete: (id: string) => void;
-}
-const ListProduct = (props: Iprops) => {
-  //get and set products
+const ListProduct = (props: any) => {
+  //get all product
   const [products, setProducts] = useState<IProduct[]>([]);
   const [categories, setCategories] = useState<ICategory[]>([]);
 
-  //set products
   useEffect(() => {
     setProducts(props.products);
-  }, [props]);
+  }, [props.products]);
 
-  //set categories
   useEffect(() => {
     setCategories(props.categories);
-  }, [props]);
+  }, [props.categories]);
 
-  //remove product
-  const onHandleDelete = (id: string) => {
+  // data product
+  const columns: ColumnsType<IProduct> = [
+    {
+      title: "#",
+      key: "index",
+      render: (text, record, index) => {
+        return index + 1;
+      },
+    },
+    {
+      title: "Tên",
+      dataIndex: "name",
+      key: "name",
+    },
+    {
+      title: "Danh mục",
+      dataIndex: "categoryId",
+      key: "categoryId",
+      render: (record: any): any => {
+        const nameCate = categories.find((c) => c._id === record);
+        return <span style={{ color: "#1677ff" }}>{nameCate?.name}</span>;
+      },
+    },
+    {
+      title: "Giá",
+      dataIndex: "price",
+      key: "price",
+      render: (record): any => {
+        return (
+          <span className="text-danger">
+            {record.toLocaleString("vi-VN", {
+              style: "currency",
+              currency: "VND",
+            })}
+          </span>
+        );
+      },
+    },
+    {
+      title: "Hình ảnh",
+      key: "image",
+      dataIndex: "image",
+      render: (record): any => {
+        return <Image width={100} height={100} src={record} />;
+      },
+    },
+    {
+      title: "Chức năng",
+      key: "action",
+      render: (record) => {
+        return (
+          <Space size="middle">
+            <Link to={`/admin/products/${record._id}/update`}>
+              <Button className="btn ">
+                <EditOutlined className="d-block btn-edit-pro" />
+              </Button>
+            </Link>
+
+            <Popconfirm
+              placement="topLeft"
+              title={text}
+              description={description}
+              onConfirm={() => onDelete(record._id)}
+              cancelText="Hủy"
+              okText="Xóa"
+            >
+              <Button className="btn m-0">
+                <DeleteOutlined className="d-block mb-1 text-danger" />
+              </Button>
+            </Popconfirm>
+          </Space>
+        );
+      },
+    },
+  ];
+
+  //confirm delete
+  const text = "Bạn có chắc chắn muốn xóa?";
+  const description = "Điều này sẽ xóa đi sản phẩm của bạn.";
+  const onDelete = (id: string) => {
     props.onDelete(id);
   };
-  return (
-    <div className="container mt-3">
-      <h3 className="text-center py-3 text-info text-uppercase">
-        <i className="bi bi-list-ol mr-2"></i>Danh sách sản phẩm
-      </h3>
-      <table className="table">
-        <thead>
-          <tr>
-            <th scope="col">STT</th>
-            <th scope="col">Tên</th>
-            <th scope="col">Danh mục</th>
-            <th scope="col">Giá</th>
-            <th scope="col">Hình ảnh</th>
-            <th scope="col">Tác vụ</th>
-          </tr>
-        </thead>
-        {products?.map((product, i) => {
-          const category = categories.find((item) => {
-            return item._id === product.categoryId;
-          });
-          return (
-            <tbody key={product._id}>
-              <tr>
-                <th scope="row">{i + 1}</th>
-                <td>{product.name}</td>
-                <td className="text-primary">{category?.name}</td>
-                <td className="text-danger">
-                  {product.price.toLocaleString("vi-VN", {
-                    style: "currency",
-                    currency: "VND",
-                  })}
-                </td>
 
-                <td>
-                  <img
-                    src={product.image}
-                    alt="product's image"
-                    className="img-list-pro"
-                  />
-                </td>
-                <td>
-                  <button
-                    className="btn text-danger"
-                    onClick={() => {
-                      onHandleDelete(product._id);
-                    }}
-                  >
-                    <i className="bi bi-trash"></i>
-                  </button>
-                  <Link
-                    to={`/admin/products/${product._id}/update`}
-                    className="text-warning"
-                  >
-                    <i className="bi bi-pencil-square"></i>
-                  </Link>
-                </td>
-              </tr>
-            </tbody>
-          );
-        })}
-      </table>
-    </div>
+  return (
+    <Table
+      columns={columns}
+      dataSource={products}
+      rowKey={(record, index) => index!}
+    />
   );
 };
 

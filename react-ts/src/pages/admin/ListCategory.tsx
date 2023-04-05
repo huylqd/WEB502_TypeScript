@@ -1,62 +1,75 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Button, Popconfirm, Space, Table, message } from "antd";
+import type { ColumnsType } from "antd/es/table";
+import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import { ICategory } from "../../types/category";
+import { Link } from "react-router-dom";
+
+// type of Props
 interface IProps {
   categories: ICategory[];
   onDelete: (id: string) => void;
 }
 const ListCategory = (props: IProps) => {
-  //get and set categories
-  const [categories, setCategories] = useState<ICategory[]>([]);
+  const [category, setCategories] = useState<ICategory[]>([]);
   useEffect(() => {
     setCategories(props.categories);
   }, [props]);
 
-  //delete category
-  const onHandleDelete = (id: string) => {
+  const text = "Bạn có chắc chắc muốn xóa?";
+  const description = "Điều này sẽ xóa đi sản phẩm của bạn.";
+  const onDelete = (id: string) => {
     props.onDelete(id);
   };
+  const columns: ColumnsType<ICategory> = [
+    {
+      title: "#",
+      key: "index",
+      render: (text, record, index) => {
+        return index + 1;
+      },
+    },
+    {
+      title: "Tên danh mục",
+      dataIndex: "name",
+      key: "name",
+    },
+    {
+      title: "Chức năng",
+      key: "action",
+      render: (record): any => {
+        return (
+          <Space size="middle">
+            <Link to={`/admin/categories/${record._id}/update`}>
+              <Button className="btn ">
+                <EditOutlined className="d-block btn-edit-pro" />
+              </Button>
+            </Link>
+
+            <Popconfirm
+              placement="topLeft"
+              title={text}
+              description={description}
+              onConfirm={() => onDelete(record._id)}
+              cancelText="Hủy"
+              okText="Xóa"
+            >
+              <Button className="btn m-0">
+                <DeleteOutlined className="d-block mb-1 text-danger" />
+              </Button>
+            </Popconfirm>
+          </Space>
+        );
+      },
+    },
+  ];
+
   return (
-    <div className="container mt-3">
-      <h3 className="text-center py-3 text-info text-uppercase">
-        <i className="bi bi-list-ol mr-2"></i>Danh sách danh mục
-      </h3>
-      <table className="table text-center">
-        <thead>
-          <tr>
-            <th scope="col">STT</th>
-            <th scope="col">Tên</th>
-            <th scope="col">Tác vụ</th>
-          </tr>
-        </thead>
-        {categories?.map((category, i) => {
-          return (
-            <tbody key={category._id}>
-              <tr>
-                <th scope="row">{i + 1}</th>
-                <td>{category.name}</td>
-                <td>
-                  <button
-                    className="btn text-danger"
-                    onClick={() => {
-                      onHandleDelete(category._id);
-                    }}
-                  >
-                    <i className="bi bi-trash"></i>
-                  </button>
-                  <Link
-                    to={`/admin/categories/${category._id}/update`}
-                    className="btn text-warning"
-                  >
-                    <i className="bi bi-pencil-square"></i>
-                  </Link>
-                </td>
-              </tr>
-            </tbody>
-          );
-        })}
-      </table>
-    </div>
+    <Table
+      columns={columns}
+      dataSource={category}
+      rowKey={(record, index) => index!}
+    />
   );
 };
 

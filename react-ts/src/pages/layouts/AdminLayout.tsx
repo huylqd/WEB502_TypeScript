@@ -1,126 +1,98 @@
+// LAYOUT OF ANTD
 import React from "react";
-import { Outlet, useNavigate } from "react-router-dom";
+import { Link, Outlet, useNavigate } from "react-router-dom";
+import {
+  LaptopOutlined,
+  NotificationOutlined,
+  UserOutlined,
+} from "@ant-design/icons";
+import type { MenuProps } from "antd";
+import { Breadcrumb, Layout, Menu, theme } from "antd";
 import { UserLogged } from "../../types/user";
+import Nav from "../../components/admin/Nav";
+
+//type Props
 interface IProps {
   user: UserLogged;
 }
+
+//LAYOUT
+const { Header, Content, Footer, Sider } = Layout;
+
+const items2: MenuProps["items"] = [
+  UserOutlined,
+  LaptopOutlined,
+  NotificationOutlined,
+].map((icon, index) => {
+  const key = String(index + 1);
+
+  return {
+    key: `sub${key}`,
+    icon: React.createElement(icon),
+    label: `subnav ${key}`,
+
+    children: new Array(4).fill(null).map((_, j) => {
+      const subKey = index * 4 + j + 1;
+      return {
+        key: subKey,
+        label: `option${subKey}`,
+      };
+    }),
+  };
+});
+
 const AdminLayout = (props: IProps): any => {
+  const {
+    token: { colorBgContainer },
+  } = theme.useToken();
+
+  //check out
+  // const handleLogout = () => {
+  //   // Xóa token khỏi state và localStorage
+  //   localStorage.removeItem("token");
+  //   localStorage.removeItem("user");
+  // };
+  //check login to admin or out
   const navigate = useNavigate();
   if (props.user?.role !== "admin") {
     return navigate("/");
   }
   return (
-    <div>
-      <header className="navbar-light bg-light">
-        <nav className="navbar navbar-expand-lg container">
-          <a className="navbar-brand font-weight-bold" href="/admin">
-            Phuong.
-          </a>
-          <button
-            className="navbar-toggler"
-            type="button"
-            data-toggle="collapse"
-            data-target="#navbarSupportedContent"
-            aria-controls="navbarSupportedContent"
-            aria-expanded="false"
-            aria-label="Toggle navigation"
-          >
-            <span className="navbar-toggler-icon"></span>
-          </button>
+    <Layout>
+      <Header className="header">
+        <div className="logo" />
+        <Link to={"/admin"} className="logo-link">
+          Phuong.
+        </Link>
 
-          <div className="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul className="navbar-nav mr-auto">
-              <li className="nav-item active">
-                <a className="nav-link" href="/admin">
-                  Bảng điều khiển <span className="sr-only">(current)</span>
-                </a>
-              </li>
-
-              <li className="nav-item dropdown">
-                <a
-                  className="nav-link dropdown-toggle"
-                  href="/admin/categories"
-                  role="button"
-                  data-toggle="dropdown"
-                  aria-expanded="false"
-                >
-                  Danh mục
-                </a>
-                <div className="dropdown-menu">
-                  <a className="dropdown-item" href="/admin/categories/add">
-                    Thêm danh mục
-                  </a>
-                  <a className="dropdown-item" href="/admin/categories">
-                    Danh sách danh mục
-                  </a>
-                </div>
-              </li>
-
-              <li className="nav-item dropdown">
-                <a
-                  className="nav-link dropdown-toggle"
-                  href="/admin/products"
-                  role="button"
-                  data-toggle="dropdown"
-                  aria-expanded="false"
-                >
-                  Sản phẩm
-                </a>
-                <div className="dropdown-menu">
-                  <a className="dropdown-item" href="/admin/products/add">
-                    Thêm sản phẩm
-                  </a>
-                  <a className="dropdown-item" href="/admin/products">
-                    Danh sách sản phẩm
-                  </a>
-                </div>
-              </li>
-            </ul>
-            <div>
-              <ul className="p-0 m-0">
-                <li className="nav-item dropdown list-style-none">
-                  <a
-                    className="dropdown-toggle text-dark nav-link px-0"
-                    href="#"
-                    role="button"
-                    data-toggle="dropdown"
-                    aria-expanded="false"
-                  >
-                    Quản trị
-                  </a>
-                  <div className="dropdown-menu">
-                    <a className="dropdown-item" href="/">
-                      Trang khách hàng
-                    </a>
-                    <a className="dropdown-item" href="#">
-                      Cài đặt quản trị
-                    </a>
-                    <div className="dropdown-divider"></div>
-                    <a className="dropdown-item" href="/signin">
-                      Đăng xuất
-                    </a>
-                  </div>
-                </li>
-              </ul>
-            </div>
-          </div>
-        </nav>
-      </header>
-      {/* CONTENT */}
-      <Outlet />
-      {/*  FOOTER */}
-      <footer className="page-footer font-small bg-light">
-        <div className="footer-copyright text-center py-3">
-          © 2023 Copyright:
-          <a
-            href="/"
-            className="text-decoration-none ml-1 text-dark font-weight-bold"
-          >
-            Phuong.
-          </a>
-        </div>
-      </footer>
-    </div>
+        {<Nav />}
+      </Header>
+      <Content style={{ padding: "0 50px" }}>
+        <Breadcrumb style={{ margin: "16px 0" }}>
+          <Breadcrumb.Item>Admin</Breadcrumb.Item>
+        </Breadcrumb>
+        <Layout style={{ padding: "24px 0", background: colorBgContainer }}>
+          <Sider style={{ background: colorBgContainer }} width={200}>
+            <Menu
+              mode="inline"
+              defaultSelectedKeys={["1"]}
+              defaultOpenKeys={["sub1 "]}
+              style={{ height: "100%" }}
+              items={items2}
+            />
+          </Sider>
+          <Content style={{ padding: "0 24px", minHeight: 280 }}>
+            <Outlet />
+          </Content>
+        </Layout>
+      </Content>
+      <Footer style={{ textAlign: "center" }}>
+        Copyright ©2023 by{" "}
+        <Link to={"/admin"} className="ml-1 link-smaller">
+          Phuong.
+        </Link>
+      </Footer>
+    </Layout>
   );
 };
 

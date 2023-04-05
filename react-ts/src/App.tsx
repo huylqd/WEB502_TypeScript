@@ -1,7 +1,8 @@
 import { Routes, Route, useNavigate } from "react-router-dom";
 import HomePage from "./pages/HomePage";
 import { useEffect, useState } from "react";
-import { addProduct, deleteProduct, getAllProduct } from "./api/product";
+
+// components
 import Products from "./pages/Products";
 import ClientLayout from "./pages/layouts/ClientLayout";
 import ProductDetail from "./pages/ProductDetail";
@@ -10,18 +11,32 @@ import DashBoard from "./pages/admin/DashBoard";
 import ListProduct from "./pages/admin/ListProduct";
 import AddProduct from "./pages/admin/AddProduct";
 import UpdateProduct from "./pages/admin/UpdateProduct";
-import { updateProduct } from "./api/product";
 import SignUp from "./pages/auth/SignUp";
 import SignIn from "./pages/auth/SignIn";
-import { signIn, signUp } from "./api/user";
-//type product
-import { IProduct } from "./types/product";
-import { ICategory } from "./types/category";
-// type user
-import { SignInUser, SignUpUser, UserLogged } from "./types/user";
-import PageNotFound from "./pages/PageNotFound";
 import ListCategory from "./pages/admin/ListCategory";
 import AddCategory from "./pages/admin/AddCategory";
+import PageNotFound from "./pages/PageNotFound";
+
+//ant design
+import { message } from "antd";
+
+// type product
+import { IProduct } from "./types/product";
+import { ICategory } from "./types/category";
+
+// type user
+import { SignInUser, SignUpUser, UserLogged } from "./types/user";
+
+// api user
+import { signIn, signUp } from "./api/user";
+// api product
+import {
+  addProduct,
+  deleteProduct,
+  getAllProduct,
+  updateProduct,
+} from "./api/product";
+// api category
 import {
   addCategory,
   deleteCategory,
@@ -29,6 +44,8 @@ import {
   updateCategory,
 } from "./api/category";
 import UpdateCategory from "./pages/admin/UpdateCategory";
+
+// APP
 function App() {
   const navigate = useNavigate();
   const [products, setProducts] = useState<IProduct[]>([]);
@@ -53,12 +70,14 @@ function App() {
     try {
       const { data } = await addProduct(product_param);
       const { product } = data;
-      alert("Thêm sản phẩm thành công🎉");
+      //check nếu có mảng products thì lấy lại toàn bộ mảng đó và push thêm phần tử vừa thêm vào
+      // rồi set lại mảng products sau đó render lại ra màn hình
       if (products) {
         setProducts([...products, product]);
       } else {
         setProducts([product]);
       }
+      message.info("Thêm sản phẩm thành công");
       navigate("/admin/products");
     } catch (error) {
       console.log(error);
@@ -75,7 +94,7 @@ function App() {
           product._id == productUpdated._id ? productUpdated : product
         )
       );
-      alert("Cập nhật sản phẩm thành công🎉");
+      message.info("Cập nhật sản phẩm thành công");
       navigate("/admin/products");
     } catch (error) {
       console.log(error);
@@ -85,12 +104,9 @@ function App() {
   //DELETE PRODUCT
   const onHandleDeleteProduct = async (id: string) => {
     try {
-      const confirmDel = window.confirm("Bạn có chắc chắn xóa sản phẩm này ?");
-      if (confirmDel) {
-        await deleteProduct(id);
-        setProducts(products.filter((product) => product._id != id));
-        alert("Xóa sản phẩm thành công🎉");
-      }
+      await deleteProduct(id);
+      setProducts(products.filter((product) => product._id != id));
+      message.info("Xóa sản phẩm thành công");
     } catch (error) {
       console.log(error);
     }
@@ -99,14 +115,14 @@ function App() {
   // SIGN UP
   const onHandleSignUp = async (data_user: SignUpUser) => {
     try {
-      const { data } = await signUp(data_user);
-      const { token } = data;
-      alert("Đăng ký tài khoản thành công. Vui lòng đăng nhập🤗");
+      await signUp(data_user);
+      message.info("Đăng ký tài khoản thành công. Vui lòng đăng nhập");
       navigate("/signin");
     } catch (error) {
       console.log(error);
     }
   };
+  console.log();
 
   //SIGN IN
   const onHandleSignIn = async (data_user: SignInUser) => {
@@ -114,10 +130,11 @@ function App() {
       const { data } = await signIn(data_user);
       localStorage.setItem("token", JSON.stringify(data.token));
       localStorage.setItem("user", JSON.stringify(data.user));
-      alert("Đăng nhập tài khoản thành công🎉");
+      message.info("Đăng nhập tài khoản thành công");
       data.user.role === "admin" ? navigate("/admin") : navigate("/");
+      window.location.reload();
     } catch (error: any) {
-      alert("Lỗi : " + error.response.data);
+      console.log(error);
     }
   };
 
@@ -148,7 +165,7 @@ function App() {
       } else {
         setCategories([category]);
       }
-      alert("Thêm danh mục thành công🎉");
+      message.info("Thêm danh mục thành công");
       navigate("/admin/categories");
     } catch (error) {
       console.log(error);
@@ -165,7 +182,7 @@ function App() {
           category._id === categoryUpdated._id ? categoryUpdated : category
         )
       );
-      alert("Cập nhật danh mục thành công🎉");
+      message.info("Cập nhật danh mục thành công");
       navigate("/admin/categories");
     } catch (error) {
       console.log(error);
@@ -175,12 +192,9 @@ function App() {
   // DELETE CATEGORY
   const onHandleRemoveCategory = async (id: string) => {
     try {
-      const confirmDel = window.confirm("Bạn có chắc chắn xóa sản phẩm này ?");
-      if (confirmDel) {
-        await deleteCategory(id);
-        setCategories(categories.filter((category) => category._id !== id));
-        alert("Xóa sản phẩm thành công🎉");
-      }
+      await deleteCategory(id);
+      setCategories(categories.filter((category) => category._id !== id));
+      message.info("Xóa danh mục thành công");
     } catch (error) {
       console.log(error);
     }

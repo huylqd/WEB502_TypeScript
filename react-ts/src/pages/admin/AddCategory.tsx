@@ -1,30 +1,49 @@
-import React from "react";
-import { useForm } from "react-hook-form";
+import { Button, Form, Input } from "antd";
 import { ICategory } from "../../types/category";
+
+//type of props
 interface IProps {
   onAdd: (data: ICategory) => void;
 }
+
 const AddCategory = (props: IProps) => {
-  const { register, handleSubmit } = useForm<ICategory>();
-  const onHandleSubmit = (data: ICategory) => {
-    props.onAdd(data);
+  const onFinish = (values: any) => {
+    props.onAdd(values);
+  };
+  const onFinishFailed = (errorInfo: any) => {
+    console.log("Failed:", errorInfo);
   };
   return (
-    <div className="container my-3">
-      <h3 className="text-center py-3 text-info text-uppercase">
-        <i className="bi bi-journal-plus mr-2"></i>Thêm danh mục
-      </h3>
-      <form className="w-50 mx-auto" onSubmit={handleSubmit(onHandleSubmit)}>
-        <div className="form-group">
-          <label htmlFor="name">Tên danh mục</label>
-          <input type="text" className="form-control" {...register("name")} />
-        </div>
-        <button type="submit" className="btn btn-info">
+    <Form
+      name="basic"
+      labelCol={{ span: 8 }}
+      wrapperCol={{ span: 16 }}
+      style={{ maxWidth: 600 }}
+      initialValues={{ remember: true }}
+      onFinish={onFinish}
+      onFinishFailed={onFinishFailed}
+      autoComplete="off"
+    >
+      <Form.Item
+        label="Tên danh mục"
+        name="name"
+        rules={[
+          { required: true, message: "Vui lòng nhập tên danh mục!" },
+          { min: 3, message: "Vui lòng nhập tên sản phẩm nhiều hơn 3 ký tự" },
+        ]}
+      >
+        <Input />
+      </Form.Item>
+      <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
+        <Button
+          type="primary"
+          htmlType="submit"
+          style={{ background: "#1677FF" }}
+        >
           Thêm
-        </button>
-      </form>
-    </div>
+        </Button>
+      </Form.Item>
+    </Form>
   );
 };
-
 export default AddCategory;

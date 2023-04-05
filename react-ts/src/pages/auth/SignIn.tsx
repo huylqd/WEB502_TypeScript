@@ -1,53 +1,75 @@
 import React from "react";
-import { SubmitHandler, useForm } from "react-hook-form";
+import { Button, Checkbox, Form, Input } from "antd";
 import { SignInUser } from "../../types/user";
 
-//type of props
+//type of Props
 interface IProps {
   onSignIn: (data: SignInUser) => void;
 }
 const SignIn = (props: IProps) => {
-  const { register, handleSubmit } = useForm<SignInUser>();
-  const onHandleSubmit: SubmitHandler<SignInUser> = (data: SignInUser) => {
-    props.onSignIn(data);
+  const onFinish = (values: any) => {
+    props.onSignIn(values);
   };
+
+  const onFinishFailed = (errorInfo: any) => {
+    console.log("Failed:", errorInfo);
+  };
+
   return (
-    <div className="container my-4">
-      <h3 className="py-2 text-uppercase text-center text-info">
-        <i className="bi bi-person mr-2"></i>Đăng nhập tài khoản
-      </h3>
-      <form className=" w-50 mx-auto" onSubmit={handleSubmit(onHandleSubmit)}>
-        <div className="form-group">
-          <label htmlFor="email">Địa chỉ Email</label>
-          <input
-            type="email"
-            className="form-control"
-            id="email"
-            {...register("email")}
-          />
-          <small id="emailHelp" className="form-text text-muted">
-            Chúng tôi sẽ không chia sẻ email của bạn với bất kỳ ai khác.
-          </small>
-        </div>
-        <div className="form-group">
-          <label htmlFor="password">Mật khẩu</label>
-          <input
-            type="password"
-            className="form-control"
-            id="password"
-            {...register("password")}
-          />
-        </div>
-        <div className="form-group form-check">
-          <input type="checkbox" className="form-check-input" id="checkout" />
-          <label className="form-check-label" htmlFor="checkout">
-            Không lưu thông tin đăng nhập
-          </label>
-        </div>
-        <button type="submit" className="btn btn-info">
-          Đăng nhập
-        </button>
-      </form>
+    <div className="mt-4">
+      <h3 className="txt-title-inup">Đăng nhập tài khoản</h3>
+      <Form
+        name="basic"
+        style={{ maxWidth: 400 }}
+        initialValues={{ remember: true }}
+        onFinish={onFinish}
+        onFinishFailed={onFinishFailed}
+        autoComplete="off"
+        className="mx-auto"
+      >
+        <Form.Item
+          label="Email"
+          name="email"
+          rules={[
+            { required: true, message: "Vui lòng nhập email của bạn!" },
+            {
+              type: "email",
+              message: "Vui lòng nhập email đúng định dạng",
+            },
+          ]}
+        >
+          <Input />
+        </Form.Item>
+
+        <Form.Item
+          label="Mật khẩu"
+          name="password"
+          rules={[
+            { required: true, message: "Vui lòng nhập mật khẩu!" },
+            { min: 6, message: "Mật khẩu phải nhiều hơn 6 ký tự!" },
+          ]}
+        >
+          <Input.Password />
+        </Form.Item>
+
+        <Form.Item
+          // name="remember"
+          valuePropName="checked"
+          wrapperCol={{ offset: 5, span: 10 }}
+        >
+          <Checkbox>Ghi nhớ tài khoản</Checkbox>
+        </Form.Item>
+
+        <Form.Item wrapperCol={{ offset: 11, span: 16 }}>
+          <Button
+            type="primary"
+            htmlType="submit"
+            style={{ backgroundColor: "#fa541c" }}
+          >
+            Đăng nhập
+          </Button>
+        </Form.Item>
+      </Form>
     </div>
   );
 };

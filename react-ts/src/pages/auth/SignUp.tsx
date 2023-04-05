@@ -1,65 +1,84 @@
 import React from "react";
-import { SubmitHandler, useForm } from "react-hook-form";
+import { Button, Checkbox, Form, Input } from "antd";
 import { SignUpUser } from "../../types/user";
-
-//type of props
 interface IProps {
   onSignUp: (data: SignUpUser) => void;
 }
 const SignUp = (props: IProps) => {
-  const { register, handleSubmit } = useForm<SignUpUser>();
-  const onHanleSumit: SubmitHandler<SignUpUser> = (data: SignUpUser) => {
-    props.onSignUp(data);
+  const onFinish = (values: any) => {
+    props.onSignUp(values);
   };
+
+  const onFinishFailed = (errorInfo: any) => {
+    console.log("Failed:", errorInfo);
+  };
+
   return (
-    <div className="container my-4">
-      <h3 className="py-2 text-uppercase text-center text-info">
-        <i className="bi bi-person-add mr-2"></i>Đăng ký tài khoản
-      </h3>
-      <form className=" w-50 mx-auto" onSubmit={handleSubmit(onHanleSumit)}>
-        <div className="form-group">
-          <label htmlFor="name">Họ tên</label>
-          <input
-            type="text"
-            className="form-control"
-            id="name"
-            {...register("name")}
-          />
-        </div>
-        <div className="form-group">
-          <label htmlFor="email">Địa chỉ Email</label>
-          <input
-            type="email"
-            className="form-control"
-            id="email"
-            {...register("email")}
-          />
-          <small id="emailHelp" className="form-text text-muted">
-            Chúng tôi sẽ không chia sẻ email của bạn với bất kỳ ai khác.
-          </small>
-        </div>
-        <div className="form-group">
-          <label htmlFor="password">Mật khẩu</label>
-          <input
-            type="password"
-            className="form-control"
-            id="password"
-            {...register("password")}
-          />
-        </div>
-        <div className="form-group">
-          <label htmlFor="confirmPassword">Xác nhận mật khẩu</label>
-          <input
-            type="password"
-            className="form-control"
-            id="confirmPassword"
-            {...register("confirmPassword")}
-          />
-        </div>
-        <button type="submit" className="btn btn-info">
-          Đăng ký
-        </button>
-      </form>
+    <div className="mt-4">
+      <h3 className="txt-title-inup">Đăng ký tài khoản</h3>
+      <Form
+        name="basic"
+        style={{ maxWidth: 400 }}
+        initialValues={{ remember: true }}
+        onFinish={onFinish}
+        onFinishFailed={onFinishFailed}
+        autoComplete="off"
+        className="mx-auto"
+      >
+        <Form.Item
+          label="Họ tên"
+          name="name"
+          rules={[{ required: true, message: "Vui lòng nhập họ tên của bạn!" }]}
+        >
+          <Input />
+        </Form.Item>
+
+        <Form.Item
+          label="Email"
+          name="email"
+          rules={[
+            { required: true, message: "Vui lòng nhập email của bạn!" },
+            {
+              type: "email",
+              message: "Vui lòng nhập email đúng định dạng",
+            },
+          ]}
+        >
+          <Input />
+        </Form.Item>
+
+        <Form.Item
+          label="Mật khẩu"
+          name="password"
+          rules={[
+            { required: true, message: "Vui lòng nhập mật khẩu!" },
+            { min: 6, message: "Mật khẩu phải nhiều hơn 6 ký tự!" },
+          ]}
+        >
+          <Input.Password />
+        </Form.Item>
+
+        <Form.Item
+          label="Xác nhận mật khẩu"
+          name="confirmPassword"
+          rules={[
+            { required: true, message: "Vui lòng nhập lại mật khẩu!" },
+            { min: 6, message: "Mật khẩu phải nhiều hơn 6 ký tự!" },
+          ]}
+        >
+          <Input.Password />
+        </Form.Item>
+
+        <Form.Item wrapperCol={{ offset: 10, span: 16 }}>
+          <Button
+            type="primary"
+            htmlType="submit"
+            style={{ backgroundColor: "#fa541c" }}
+          >
+            Đăng ký
+          </Button>
+        </Form.Item>
+      </Form>
     </div>
   );
 };

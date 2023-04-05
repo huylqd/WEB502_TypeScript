@@ -1,40 +1,67 @@
-import React, { useEffect } from "react";
-import { useForm } from "react-hook-form";
-import { ICategory } from "../../types/category";
+import React, { useEffect, useState } from "react";
+import { Button, Form, Input } from "antd";
 import { useParams } from "react-router-dom";
+import { ICategory } from "../../types/category";
 interface IProps {
   categories: ICategory[];
   onUpdate: (data: ICategory) => void;
 }
 const UpdateCategory = (props: IProps) => {
   const { id } = useParams();
-  const { register, handleSubmit, reset } = useForm<ICategory>();
+  const [form] = Form.useForm();
+  const [formData, setFormData] = useState<ICategory>();
 
   useEffect(() => {
-    const currentCategory = props.categories.find(
-      (category) => category._id === id
-    );
-    reset(currentCategory);
-  }, [props]);
+    setFormData(props.categories?.find((category: any) => category._id === id));
+  }, [props.categories]);
 
-  const onHandleSubmit = (data: ICategory) => {
-    props.onUpdate(data);
+  const onFinish = (values: any) => {
+    console.log(values);
   };
+
+  const onFinishFailed = (errorInfo: any) => {
+    console.log("Failed:", errorInfo);
+  };
+
   return (
-    <div className="container my-3">
-      <h3 className="text-center py-3 text-info text-uppercase">
-        <i className="bi bi-pencil-square mr-2"></i>Cập nhật danh mục
-      </h3>
-      <form className="w-50 mx-auto" onSubmit={handleSubmit(onHandleSubmit)}>
-        <div className="form-group">
-          <label htmlFor="name">Tên danh mục</label>
-          <input type="text" className="form-control" {...register("name")} />
-        </div>
-        <button type="submit" className="btn btn-info">
+    <Form
+      name="basic"
+      labelCol={{ span: 8 }}
+      wrapperCol={{ span: 16 }}
+      style={{ maxWidth: 600 }}
+      onFinish={onFinish}
+      onFinishFailed={onFinishFailed}
+      form={form}
+      initialValues={formData}
+      autoComplete="off"
+    >
+      <Form.Item
+        name="name"
+        label="Tên danh mục"
+        rules={[
+          { required: true, message: "Vui lòng nhập tên danh mục!" },
+          { min: 3, message: "Vui lòng nhập tên sản phẩm nhiều hơn 3 ký tự" },
+        ]}
+      >
+        <Input />
+      </Form.Item>
+
+      <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
+        <Button
+          type="primary"
+          htmlType="submit"
+          style={{ background: "#1677FF" }}
+        >
           Cập nhật
-        </button>
-      </form>
-    </div>
+        </Button>
+        <Button
+          type="primary"
+          style={{ background: "#8c8c8c", marginLeft: "5px" }}
+        >
+          Đặt lại
+        </Button>
+      </Form.Item>
+    </Form>
   );
 };
 

@@ -58,3 +58,37 @@
 .wrap-img-price {
   width: 330px;
 }
+.logo-link {
+  float: left;
+  width: 150px;
+  height: 31px;
+  margin: 0px 0px 16px 0;
+  font-weight: bold;
+  font-size: 30px;
+  transition: all 0.3s ease;
+}
+.logo-link:hover {
+  text-decoration: none;
+}
+.link-smaller {
+  font-size: 16px;
+  text-decoration: none;
+  color: #007bff;
+  transition: all 0.3s ease;
+  font-weight: bold;
+}
+.link-smaller:hover {
+  text-decoration: none;
+}
+.btn-edit-pro {
+  font-size: 19px;
+  color: #faad14;
+}
+.txt-title-inup {
+  font-size: 24px;
+  text-align: center;
+  text-transform: uppercase;
+  padding: 15px 0px;
+  color: #fa541c;
+  font-weight: 600;
+}
